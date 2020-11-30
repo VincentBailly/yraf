@@ -115,33 +115,12 @@
     "pkg-tests": "yarn --cwd packages/pkg-tests jest yarn.test.js",
     "prettier": "eslint src __tests__ --fix",
     "release-branch": "./scripts/release-branch.sh",
-    "test": "yarn lint && yarn test-only",
-    "test-only": "node --max_old_space_size=4096 node_modules/jest/bin/jest.js --verbose",
-    "test-only-debug": "node --inspect-brk --max_old_space_size=4096 node_modules/jest/bin/jest.js --runInBand --verbose",
+    "test": "jest test.js",
     "test-coverage": "node --max_old_space_size=4096 node_modules/jest/bin/jest.js --coverage --verbose",
     "watch": "gulp watch",
     "commit": "git-cz"
   },
   "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.js"
-    ],
-    "testEnvironment": "node",
-    "modulePathIgnorePatterns": [
-      "__tests__/fixtures/",
-      "packages/pkg-tests/pkg-tests-fixtures",
-      "dist/"
-    ],
-    "testPathIgnorePatterns": [
-      "__tests__/(fixtures|__mocks__)/",
-      "updates/",
-      "_(temp|mock|install|init|helpers).js$",
-      "packages/pkg-tests"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
+    "testEnvironment": "node"
   }
 }
