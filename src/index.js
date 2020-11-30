@@ -22,5 +22,5 @@ export function resolveAndFetch() {
 }
 
 if (require.main === module) {
-  install().then(r => console.log(JSON.stringify(r, undefined, 2))).catch(() => process.exit(1))
+  resolveAndFetch().then(r => console.log(JSON.stringify(r, undefined, 2))).catch(() => process.exit(1))
 }
