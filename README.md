@@ -28,7 +28,7 @@ resolveAndFetch()
 
 ## Prior art
 
-Yraf wouldn't exist if it wasn't for excellent prior art. Yarn has been inspired by the following projects:
+Yraf wouldn't exist if it wasn't for excellent prior art. Yraf has been inspired by the following projects:
 
  - [yarn](https://github.com/yarnpkg/yarn)
  - [npm](https://github.com/npm/cli)
