@@ -631,11 +631,15 @@ export class Install {
           name: o.name, 
           version: o.version, 
           location: o._loc, 
+          engines: o.engines,
+          os: o.os,
+          cpu: o.cpu,
           dependencies: o.dependencies, 
           optionalDependencies: o.optionalDependencies,
           dependenciesMeta: o.dependenciesMeta,
           peerDependencies: o.peerDependencies, 
           peerDependenciesMeta: o.peerDependenciesMeta, 
+          bundledDependencies: o.bundleDependencies || o.bundledDependencies,
           devDependencies: o._loc.startsWith(process.cwd()) && o.devDependencies || undefined
         }))
         process.send( { resolutionMap, locationMap } );
