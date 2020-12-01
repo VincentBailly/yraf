@@ -642,7 +642,6 @@ export class Install {
           optionalDependencies: o.optionalDependencies,
           peerDependencies: o.peerDependencies, 
           peerDependenciesMeta: o.peerDependenciesMeta, 
-          bundledDependencies: o.bundleDependencies || o.bundledDependencies,
           devDependencies: o._loc.startsWith(process.cwd()) && o.devDependencies || undefined
         }))
         process.send( { resolutionMap, locationMap } );

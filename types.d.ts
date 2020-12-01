@@ -24,7 +24,6 @@ declare type LocationMap = {
             optional?: boolean;
         };
     };
-    bundledDependencies?: string[];
 }[];
 export declare function resolveAndFetch(): Promise<{
     resolutionMap: ResolutionMap;
