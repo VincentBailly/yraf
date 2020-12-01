@@ -626,7 +626,14 @@ export class Install {
         const manifests: Array<Manifest> = await fetcher.fetch(this.resolver.getManifests(), this.config);
         this.resolver.updateManifests(manifests);
         await compatibility.check(this.resolver.getManifests(), this.config, this.flags.ignoreEngines);
-        const resolutionMap = Object.keys(this.resolver.patterns).map(k => ({ range: k, version: this.resolver.patterns[k].version }));
+        const resolutionMap = {};
+        Object.keys(this.resolver.patterns).forEach(k => {
+          const name = this.resolver.patterns[k].name;
+          const range = k.slice(1).split("@")[1];
+          const version = this.resolver.patterns[k].version;
+          resolutionMap[name] = resolutionMap[name] || {};
+          resolutionMap[name][range] = version;
+        })
         const locationMap = manifests.map(o => ({ 
           name: o.name, 
           version: o.version, 
