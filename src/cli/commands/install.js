@@ -634,13 +634,10 @@ export class Install {
           resolutionMap[name] = resolutionMap[name] || {};
           resolutionMap[name][range] = version;
         })
-        const locationMap = manifests.map(o => ({ 
+        const locationMap = manifests.filter(o => !o._reference.ignore).filter(o => !o.ignore).map(o => ({ 
           name: o.name, 
           version: o.version, 
           location: o._loc, 
-          engines: o.engines,
-          os: o.os,
-          cpu: o.cpu,
           dependencies: o.dependencies, 
           optionalDependencies: o.optionalDependencies,
           peerDependencies: o.peerDependencies, 

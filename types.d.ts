@@ -7,11 +7,6 @@ declare type LocationMap = {
     name: string;
     version: string;
     location: string;
-    engines?: {
-        [key: string]: string;
-    };
-    os?: string[];
-    cpu?: string[];
     dependencies?: {
         [name: string]: string;
     };
