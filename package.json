@@ -106,7 +106,7 @@
   "engines": {
     "node": ">=4.0.0"
   },
-  "repository": "VincentBailly/yarn",
+  "repository": "github:VincentBailly/yraf",
   "scripts": {
     "build": "gulp build",
     "build-dist": "bash ./scripts/build-dist.sh",
