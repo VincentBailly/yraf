@@ -643,7 +643,6 @@ export class Install {
           cpu: o.cpu,
           dependencies: o.dependencies, 
           optionalDependencies: o.optionalDependencies,
-          dependenciesMeta: o.dependenciesMeta,
           peerDependencies: o.peerDependencies, 
           peerDependenciesMeta: o.peerDependenciesMeta, 
           bundledDependencies: o.bundleDependencies || o.bundledDependencies,

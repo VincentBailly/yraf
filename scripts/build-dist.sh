@@ -28,5 +28,6 @@ cp worker.js dist/worker.js
 cp README.md dist/
 cp LICENSE dist/
 cp -r lib dist
+cp types.d.ts dist/
 
 ./scripts/update-dist-manifest.js $(node -p "require('fs').realpathSync('dist/package.json')")
