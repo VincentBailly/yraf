@@ -642,7 +642,7 @@ export class Install {
           isLocal: o._loc.startsWith(process.cwd()),
           dependencies: o.dependencies, 
           optionalDependencies: o.optionalDependencies,
-          peerDependencies: o.peerDependencies, 
+          peerDependencies: {...(o.peerDependencies || {}), ...(o.peerDependenciesMeta ? Object.keys(o.peerDependenciesMeta).map(k => ({[k]: "*"})).reduce((a,n) => ({...a, ...n}), {}) : {})}, 
           peerDependenciesMeta: o.peerDependenciesMeta, 
           devDependencies: o._loc.startsWith(process.cwd()) && o.devDependencies || undefined
         }))
