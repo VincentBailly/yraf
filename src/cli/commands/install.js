@@ -629,7 +629,8 @@ export class Install {
         const resolutionMap = {};
         Object.keys(this.resolver.patterns).forEach(k => {
           const name = this.resolver.patterns[k].name;
-          const range = k.slice(1).split("@")[1];
+          const atIndex = k.slice(1).indexOf("@");
+          const range = k.slice(1 + atIndex + 1);
           const version = this.resolver.patterns[k].version;
           resolutionMap[name] = resolutionMap[name] || {};
           resolutionMap[name][range] = version;
