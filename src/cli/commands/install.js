@@ -639,6 +639,7 @@ export class Install {
           name: o.name, 
           version: o.version, 
           location: o._loc, 
+          isLocal: o._loc.startsWith(process.cwd()),
           dependencies: o.dependencies, 
           optionalDependencies: o.optionalDependencies,
           peerDependencies: o.peerDependencies, 
