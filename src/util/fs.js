@@ -515,7 +515,7 @@ export function copy(src: string, dest: string, reporter: Reporter): Promise<voi
 
 const { Worker } = require('worker_threads');
 function spawnWorker() {
-    return new Worker(require('path').join(__dirname, '..', 'worker.js'));
+    return new Worker(`___WORKER___PLACEHOLDER___`);
 }
 
 const numberOfWorkers = process.env.WORKERS_LIMIT ? parseInt(process.env.WORKERS_LIMIT) : Math.ceil(os.cpus().length/ 2)
