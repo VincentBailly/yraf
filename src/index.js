@@ -5,7 +5,7 @@ export function resolveAndFetch() {
   return new Promise((resolve, reject) => {
     let result = undefined;
     try {
-      const child = fork(pathJoin(__dirname, "cli", "index.js"), ["--ignore-scripts"], { stdio: "inherit" });
+      const child = fork(pathJoin(__dirname, "cli", "index.js"), ["--ignore-scripts"], { stdio: "inherit", execArgv: []});
       child.on("message", m => {
         result = m;
       });
