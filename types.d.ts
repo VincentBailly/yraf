@@ -7,6 +7,8 @@ declare type LocationMap = {
     name: string;
     version: string;
     location: string;
+    isLocal?: boolean;
+    isRoot?: boolean;
     dependencies?: {
         [name: string]: string;
     };
