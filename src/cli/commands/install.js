@@ -635,6 +635,10 @@ export class Install {
           resolutionMap[name] = resolutionMap[name] || {};
           resolutionMap[name][range] = version;
         })
+        // When we are in a single package repo, we need to add manually the local package to the graph
+        if (!this.config.workspaceRootFolder) {
+          manifests.push({...manifest, _loc: process.cwd()});
+        }
         const locationMap = manifests.filter(o => !o._reference.ignore).filter(o => !o.ignore).map(o => {
           // Remove the bundled dependencies from the list of dependencies
           const dependencies = o.dependencies || {};
