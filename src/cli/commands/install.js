@@ -635,17 +635,24 @@ export class Install {
           resolutionMap[name] = resolutionMap[name] || {};
           resolutionMap[name][range] = version;
         })
-        const locationMap = manifests.filter(o => !o._reference.ignore).filter(o => !o.ignore).map(o => ({ 
+        const locationMap = manifests.filter(o => !o._reference.ignore).filter(o => !o.ignore).map(o => {
+          // Remove the bundled dependencies from the list of dependencies
+          const dependencies = o.dependencies || {};
+          const bundled = o.bundleDependencies || o.bundledDependencies || [];
+          bundled.forEach(b => {
+            delete dependencies[b];
+          })
+          return { 
           name: o.name, 
           version: o.version, 
           location: o._loc, 
           isLocal: o._loc.startsWith(process.cwd()),
-          dependencies: o.dependencies, 
+          dependencies, 
           optionalDependencies: o.optionalDependencies,
           peerDependencies: {...(o.peerDependenciesMeta ? Object.keys(o.peerDependenciesMeta).map(k => ({[k]: "*"})).reduce((a,n) => ({...a, ...n}), {}) : {}), ...(o.peerDependencies || {}) }, 
           peerDependenciesMeta: o.peerDependenciesMeta, 
           devDependencies: o._loc.startsWith(process.cwd()) && o.devDependencies || undefined
-        }))
+        }})
         process.send( { resolutionMap, locationMap } );
       }),
     );
