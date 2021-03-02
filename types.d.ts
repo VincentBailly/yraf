@@ -1,9 +1,9 @@
-declare type ResolutionMap = {
+export declare type ResolutionMap = {
     [name: string]: {
         [range: string]: string;
     };
 };
-declare type LocationMap = {
+export declare type LocationMap = {
     name: string;
     version: string;
     location: string;
