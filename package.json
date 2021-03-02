@@ -1,6 +1,6 @@
 {
   "name": "yraf",
-  "version": "1.22.34",
+  "version": "1.22.35",
   "license": "BSD-2-Clause",
   "preferGlobal": true,
   "description": "Yarn Resolve And Fetch",
