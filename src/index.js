@@ -1,11 +1,11 @@
 import { fork } from "child_process";
 import { join as pathJoin } from "path";
 
-export function resolveAndFetch() {
+export function resolveAndFetch(scope) {
   return new Promise((resolve, reject) => {
     let result = undefined;
     try {
-      const child = fork(pathJoin(__dirname, "cli", "index.js"), ["--ignore-scripts"], { stdio: "inherit", execArgv: []});
+      const child = fork(pathJoin(__dirname, "cli", "index.js"), ["--ignore-scripts", "--scope", scope || "**"], { stdio: "inherit", execArgv: []});
       child.on("message", m => {
         result = m;
       });
@@ -19,8 +19,4 @@ export function resolveAndFetch() {
       reject(e)
     }
   });
-}
-
-if (require.main === module) {
-  resolveAndFetch().then(r => console.log(JSON.stringify(r, undefined, 2))).catch(() => process.exit(1))
 }

@@ -26,7 +26,7 @@ export declare type LocationMap = {
         };
     };
 }[];
-export declare function resolveAndFetch(): Promise<{
+export declare function resolveAndFetch(scope?: string): Promise<{
     resolutionMap: ResolutionMap;
     locationMap: LocationMap;
 }>;

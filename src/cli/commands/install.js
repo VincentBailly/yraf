@@ -83,6 +83,8 @@ type Flags = {
 
   // add, remove, upgrade
   workspaceRootIsCwd: boolean,
+
+  scope: string
 };
 
 function normalizeFlags(config: Config, rawFlags: Object): Flags {
@@ -104,6 +106,7 @@ function normalizeFlags(config: Config, rawFlags: Object): Flags {
     linkDuplicates: !!rawFlags.linkDuplicates,
     checkFiles: !!rawFlags.checkFiles,
     audit: !!rawFlags.audit,
+    scope: rawFlags.scope || "**",
 
     // add
     peer: !!rawFlags.peer,
@@ -621,9 +624,22 @@ export class Install {
 
     steps.push((curr: number, total: number) =>
       callThroughHook('fetchStep', async () => {
+        const workspaces = Object.keys(this.resolver.workspaceLayout.workspaces).filter(n => n !== this.resolver.workspaceLayout.virtualManifestName);
+        
+        const inScope = require("micromatch")(workspaces, this.flags.scope);
+
         this.markIgnored(ignorePatterns);
         this.reporter.step(curr, total, this.reporter.lang('fetchingPackages'), emoji.get('truck'));
-        const manifests: Array<Manifest> = await fetcher.fetch(this.resolver.getManifests(), this.config);
+
+        const aggregator = this.resolver.patterns[`${this.resolver.workspaceLayout.virtualManifestName}@1.0.0`];
+
+        // Redefine the dependencies of the workspaces aggregator to only include dependencies in scope.
+        aggregator._reference.dependencies = Object.keys(manifest.dependencies || {}).map(k => `${k}@${manifest.dependencies[k]}`)
+        .concat(Object.keys(manifest.devDependencies || {}).map(k => `${k}@${manifest.devDependencies[k]}`))
+        .concat(inScope.map(n => this.resolver.patternsByPackage[n][0]));
+
+        const manifests: Array<Manifest> = await fetcher.fetch([...this.resolver.getTopologicalManifests([`${this.resolver.workspaceLayout.virtualManifestName}@1.0.0`])], this.config);
+
         this.resolver.updateManifests(manifests);
         await compatibility.check(this.resolver.getManifests(), this.config, this.flags.ignoreEngines);
         const resolutionMap = {};
@@ -635,11 +651,13 @@ export class Install {
           resolutionMap[name] = resolutionMap[name] || {};
           resolutionMap[name][range] = version;
         })
-        // When we are in a single package repo, we need to add manually the local package to the graph
-        if (!this.config.workspaceRootFolder) {
-          manifests.push({...manifest, _loc: process.cwd()});
-        }
-        const locationMap = manifests.filter(o => !o._reference.ignore).filter(o => !o.ignore).map(o => {
+        
+
+        // Adds top level package.
+        manifests.push({...manifest, _loc: path.join(process.cwd(), "package.json")});
+
+
+        const locationMap = manifests.filter(o => !o.name.startsWith("workspace-aggregator-")).filter(o => !(o._reference && o._reference.ignore)).filter(o => !o.ignore).map(o => {
           // Remove the bundled dependencies from the list of dependencies
           const dependencies = o.dependencies || {};
           const bundled = o.bundleDependencies || o.bundledDependencies || [];
@@ -652,7 +670,7 @@ export class Install {
           location: o._loc, 
           isLocal: o._loc.startsWith(process.cwd()),
           dependencies, 
-          optionalDependencies: o.optionalDependencies,
+          optionalDependencies: o.optionalDependencies, // TODO: remove these and remove the unfulfilled optional dependencies instead.
           peerDependencies: {...(o.peerDependenciesMeta ? Object.keys(o.peerDependenciesMeta).map(k => ({[k]: "*"})).reduce((a,n) => ({...a, ...n}), {}) : {}), ...(o.peerDependencies || {}) }, 
           peerDependenciesMeta: o.peerDependenciesMeta, 
           devDependencies: o._loc.startsWith(process.cwd()) && o.devDependencies || undefined
