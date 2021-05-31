@@ -233,7 +233,7 @@ export default class PackageRequest {
   /**
    * TODO description
    */
-  async find({fresh, frozen}: {fresh: boolean, frozen?: boolean}): Promise<void> {
+  async find({fresh, frozen, extraDependencies}: {fresh: boolean, frozen?: boolean, extraDependencies: {}}): Promise<void> {
     // find version info for this package pattern
     const info: Manifest = await this.findVersionInfo();
 
@@ -282,6 +282,16 @@ export default class PackageRequest {
     const promises = [];
     const deps = [];
     const parentNames = [...this.parentNames, name];
+
+    if (Object.keys(extraDependencies || {}).includes(info.name)) {
+      const candidates = extraDependencies[info.name] || {};
+      Object.keys(candidates).filter(range => semver.satisfies(info.version, range))
+            .forEach(c => {
+              info.dependencies = {...(info.dependencies || {}), ...(candidates[c].dependencies || {})}
+      
+            })
+    }
+    
     // normal deps
     for (const depName in info.dependencies) {
       const depPattern = depName + '@' + info.dependencies[depName];
@@ -294,7 +304,7 @@ export default class PackageRequest {
           optional: this.optional,
           parentRequest: this,
           parentNames,
-        }),
+        }, extraDependencies),
       );
     }
 
@@ -310,7 +320,7 @@ export default class PackageRequest {
           optional: true,
           parentRequest: this,
           parentNames,
-        }),
+        }, extraDependencies),
       );
     }
     if (remote.type === 'workspace' && !this.config.production) {
@@ -326,7 +336,7 @@ export default class PackageRequest {
             optional: false,
             parentRequest: this,
             parentNames,
-          }),
+          }, extraDependencies),
         );
       }
     }

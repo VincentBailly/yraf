@@ -586,6 +586,7 @@ export class Install {
           isFlat: this.flags.flat,
           isFrozen: this.flags.frozenLockfile,
           workspaceLayout,
+          extraDependencies: manifest.extraDependencies || {}
         });
         topLevelPatterns = this.preparePatterns(rawPatterns);
         flattenedTopLevelPatterns = await this.flatten(topLevelPatterns);
@@ -656,6 +657,18 @@ export class Install {
         // Adds top level package.
         manifests.push({...manifest, _loc: path.join(process.cwd(), "package.json")});
 
+        manifests.forEach(m => {
+          if (Object.keys(manifest.extraDependencies || {}).includes(m.name)) {
+            const candidates = manifest.extraDependencies[m.name] || {};
+            Object.keys(candidates).filter(range => semver.satisfies(m.version, range))
+                  .forEach(c => {
+                    
+                    m.dependencies = {...(m.dependencies || {}), ...(candidates[c].dependencies || {})}
+                    m.peerDependencies = {...(m.peerDependencies || {}), ...(candidates[c].peerDependencies || {})}
+                  })
+          }
+
+        })
 
         const locationMap = manifests.filter(o => !o.name.startsWith("workspace-aggregator-")).filter(o => !(o._reference && o._reference.ignore)).filter(o => !o.ignore).map(o => {
           // Remove the bundled dependencies from the list of dependencies
