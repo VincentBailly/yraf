@@ -486,7 +486,7 @@ export default class PackageResolver {
    * TODO description
    */
 
-  async find(initialReq: DependencyRequestPattern): Promise<void> {
+  async find(initialReq: DependencyRequestPattern, extraDependencies): Promise<void> {
     const req = this.resolveToResolution(initialReq);
 
     // we've already resolved it with a resolution
@@ -524,7 +524,7 @@ export default class PackageResolver {
       request.init();
     }
 
-    await request.find({fresh, frozen: this.frozen});
+    await request.find({fresh, frozen: this.frozen, extraDependencies});
   }
 
   /**
@@ -533,10 +533,11 @@ export default class PackageResolver {
 
   async init(
     deps: DependencyRequestPatterns,
-    {isFlat, isFrozen, workspaceLayout}: ResolverOptions = {
+    {isFlat, isFrozen, workspaceLayout, extraDependencies}: ResolverOptions = {
       isFlat: false,
       isFrozen: false,
       workspaceLayout: undefined,
+      extraDependencies: {}
     },
   ): Promise<void> {
     this.flat = Boolean(isFlat);
@@ -545,7 +546,7 @@ export default class PackageResolver {
     const activity = (this.activity = this.reporter.activity());
 
     for (const req of deps) {
-      await this.find(req);
+      await this.find(req, extraDependencies);
     }
 
     // all required package versions have been discovered, so now packages that

@@ -1,3 +1,4 @@
+
 ## Yarn Resolve And Fetch
 
 Node API for Yarn v1 resolution and fetching code.
@@ -25,6 +26,26 @@ resolveAndFetch()
 
 ```
 
+
+## Configuration
+
+Yraf allows to declare dependencies on behalf of external packages, this is useful when external package forgot to declare all their dependencies.
+
+Example: package.json
+```javascript
+{
+  // rest of package.json
+  "extraDependencies": {
+    "webpack": {
+      "^4.0.0": {
+        "dependencies": {
+          "webpack-cli": "^4.0.0"
+        }
+      }
+    }
+  }
+}
+```
 
 ## Prior art
 
