@@ -670,7 +670,7 @@ export class Install {
 
         })
 
-        const locationMap = manifests.filter(o => !o.name.startsWith("workspace-aggregator-")).filter(o => !(o._reference && o._reference.ignore)).filter(o => !o.ignore).map(o => {
+        const locationMap = manifests.filter(o => !o.name.startsWith("workspace-aggregator-")).filter(o => !(o._reference && o._reference.ignore)).map(o => {
           // Remove the bundled dependencies from the list of dependencies
           const dependencies = o.dependencies || {};
           const bundled = o.bundleDependencies || o.bundledDependencies || [];
